@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Музей вчителя v4 - Коротичанський ліцей</title>
+    <style>
+        :root {
+            --dark: #1a1a1a;
+            --accent: #c0392b;
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --text: #2f3640;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* НАВІГАЦІЯ */
+        nav {
+            background: var(--dark);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }  
+        .logo img{
+            width:100px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-link {
+            color: #dcdde1;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* БУРГЕР МЕНЮ */
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ГОЛОВНИЙ КОНТЕНТ */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .hall-info {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .hall-info h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* КАРТКА ЕКСПОНАТА */
+        .card {
+            background: var(--card);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            cursor: pointer;
+            animation: slideUp 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            margin: 0 0 10px 0;
+            color: var(--dark);
+        }
+
+        /* МОДАЛЬНЕ ВІКНО */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 2.5rem;
+            color: white;
+            cursor: pointer;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .modal-img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            background: #000;
+        }
+
+        .modal-body {
+            padding: 40px;
+        }
+
+        /* АНІМАЦІЇ */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* АДАПТИВНІСТЬ */
+        @media (max-width: 850px) {
+            .burger { display: block; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%; left: 0; width: 100%;
+                background: var(--dark);
+                padding: 20px 0;
+                border-top: 1px solid #333;
+            }
+            .nav-links.active { display: flex; }
+            .nav-link { text-align: center; width: 80%; margin: 5px auto; }
+            .hall-info h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+<header>
+<nav>
+    <div class="nav-container">
+        <div class="logo" onclick="changeHall('wall1')"><img src="posters/logo1.png" alt="Логотип"></div><h1>Коротичанський музей вчителя</h1>
+        <button class="burger" onclick="toggleMenu()">☰</button>
+        <div class="nav-links" id="navLinks">
+            </div>
+    </div>
+</nav>
+</header>
+<main class="container">
+    <div class="hall-info">
+        <h1 id="titleDisplay">Завантаження...</h1>
+        <p id="descDisplay"></p>
+    </div>
+    <div class="gallery" id="exhibitGrid">
+        </div>
+
+</main>
+<footer>
+    <p>&copy; 2026 Коротичанський музей вчителя. Всі права захищені.</p>
+</footer>
+<div id="museumModal" class="modal">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <div class="modal-content">
+        <img id="mImg" src="" class="modal-img">
+        <div class="modal-body">
+            <h2 id="mTitle"></h2>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <p id="mFullDesc"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * БАЗА ДАНИХ МУЗЕЮ (JSON)
+     */
+    const MUSEUM_DATA = {
+        halls: [
+            { id: "wall1", name: "Стіна 1", title: "Заснування ліцею", desc: "Документи та фотографії перших років будівництва школи." },
+            { id: "wall2", name: "Стіна 2", title: "Вчителі-ветерани", desc: "Пам'ять про тих, хто присвятив життю освіті поколінь." },
+            { id: "wall3", name: "Стіна 3", title: "Методична спадщина", desc: "Унікальні розробки, підручники та приладдя минулого." },
+            { id: "wall4", name: "Стіна 4", title: "Сучасна історія", desc: "Новітні досягнення та цифрова трансформація ліцею." },
+            { id: "stands", name: "Стійки", title: "Фізичні артефакти", desc: "Колекція особистих речей та шкільного обладнання." }
+        ],
+        exhibits: [
+            { 
+                id: 1, hall: "wall1", title: "Перше фото будівлі", 
+                short: "1954 рік. Початок будівництва.", 
+                full: "Це рідкісне архівне фото показує перший етап зведення головного корпусу ліцею. На задньому плані можна побачити перших вчителів-ентузіастів.", 
+                img: "posters/proto-exponat.png" 
+            },
+            { 
+                id: 2, hall: "stands", title: "Перо вчителя", 
+                short: "Сталеве перо з дерев'яним тримачем.", 
+                full: "Цим пером користувався вчитель математики у 1960-х роках. Таке приладдя вимагало неабиякої дисципліни та майстерності каліграфії.", 
+                img: "posters/proto-exponat.png" 
+            },
+            { 
+                id: 3, hall: "wall2", title: "Династія педагогів", 
+                short: "Історія родини, що викладає 100 років.", 
+                full: "Детальний опис педагогічної династії, де три покоління вчителів працювали в стінах нашого закладу.", 
+                img: "posters/proto-exponat.png" 
+            }
+        ]
+    };
+
+    let activeHall = "wall1";
+
+    // Ініціалізація меню
+    function initNav() {
+        const nav = document.getElementById('navLinks');
+        nav.innerHTML = MUSEUM_DATA.halls.map(h => `
+            <a class="nav-link ${h.id === activeHall ? 'active' : ''}" 
+               data-id="${h.id}" onclick="changeHall('${h.id}')">
+               ${h.name}
+            </a>
+        `).join('');
+    }
+
+    // Перемикання залів
+    function changeHall(hallId) {
+        activeHall = hallId;
+        
+        // Оновлення меню
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.toggle('active', link.dataset.id === hallId);
+        });
+        
+        // Закриття мобільного меню
+        document.getElementById('navLinks').classList.remove('active');
+        
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Відмальовування контенту
+    function render() {
+        const hall = MUSEUM_DATA.halls.find(h => h.id === activeHall);
+        document.getElementById('titleDisplay').innerText = hall.title;
+        document.getElementById('descDisplay').innerText = hall.desc;
+
+        const grid = document.getElementById('exhibitGrid');
+        const items = MUSEUM_DATA.exhibits.filter(ex => ex.hall === activeHall);
+
+        grid.innerHTML = items.length ? items.map(ex => `
+            <div class="card" onclick="openModal(${ex.id})">
+                <img src="${ex.img}" alt="${ex.title}">
+                <div class="card-content">
+                    <h3>${ex.title}</h3>
+                    <p style="font-size: 14px; color: #666;">${ex.short}</p>
+                </div>
+            </div>
+        `).join('') : `<p style="grid-column: 1/-1; text-align:center; padding:50px; opacity:0.5;">У цьому залі експонати ще готуються...</p>`;
+    }
+
+    // Модальне вікно
+    function openModal(id) {
+        const ex = MUSEUM_DATA.exhibits.find(e => e.id === id);
+        document.getElementById('mTitle').innerText = ex.title;
+        document.getElementById('mFullDesc').innerText = ex.full;
+        document.getElementById('mImg').src = ex.img;
+        document.getElementById('museumModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('museumModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Бургер
+    function toggleMenu() {
+        document.getElementById('navLinks').classList.toggle('active');
+    }
+
+    // Закриття кліком поза вікном
+    window.onclick = (e) => {
+        if (e.target.className === 'modal') closeModal();
+    }
+
+    // Старт
+    initNav();
+    render();
+</script>
+
+</body>
+</html>
